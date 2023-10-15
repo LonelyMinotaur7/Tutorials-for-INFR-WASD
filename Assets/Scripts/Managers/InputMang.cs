@@ -14,6 +14,9 @@ public static class InputMang
 
         _Controls = new Controls();
 
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
         int points = 0;
 
         _Controls.Game.Movement.performed += ctx =>
@@ -29,6 +32,16 @@ public static class InputMang
         _Controls.Game.Jump.started += _ =>
         {
             myPlayer.Jump();
+        };
+
+        _Controls.Game.Look.performed += ctx =>
+        {
+            myPlayer.SetLookDirection(ctx.ReadValue<Vector2>());
+        };
+
+        _Controls.Game.Shoot.performed += ctx =>
+        {
+            myPlayer.Shoot();
         };
 
         _Controls.Perm.Enable();

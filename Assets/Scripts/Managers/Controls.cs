@@ -62,6 +62,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Look"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""7bda1360-07e1-4b75-a7a2-4ae5c2a95fed"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": ""InvertVector2(invertX=false)"",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -134,7 +143,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""98c4ba3d-dd74-4c78-a4fd-58b35eba68c5"",
-                    ""path"": ""<Mouse>/press"",
+                    ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -161,6 +170,17 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ab62ca89-a739-46ad-bd19-97a84a1765cb"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Look"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -231,6 +251,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_Game_Shoot = m_Game.FindAction("Shoot", throwIfNotFound: true);
         m_Game_Ability = m_Game.FindAction("Ability", throwIfNotFound: true);
         m_Game_Jump = m_Game.FindAction("Jump", throwIfNotFound: true);
+        m_Game_Look = m_Game.FindAction("Look", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Newaction = m_UI.FindAction("New action", throwIfNotFound: true);
@@ -302,6 +323,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Game_Shoot;
     private readonly InputAction m_Game_Ability;
     private readonly InputAction m_Game_Jump;
+    private readonly InputAction m_Game_Look;
     public struct GameActions
     {
         private @Controls m_Wrapper;
@@ -310,6 +332,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         public InputAction @Shoot => m_Wrapper.m_Game_Shoot;
         public InputAction @Ability => m_Wrapper.m_Game_Ability;
         public InputAction @Jump => m_Wrapper.m_Game_Jump;
+        public InputAction @Look => m_Wrapper.m_Game_Look;
         public InputActionMap Get() { return m_Wrapper.m_Game; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -331,6 +354,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
+            @Look.started += instance.OnLook;
+            @Look.performed += instance.OnLook;
+            @Look.canceled += instance.OnLook;
         }
 
         private void UnregisterCallbacks(IGameActions instance)
@@ -347,6 +373,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
+            @Look.started -= instance.OnLook;
+            @Look.performed -= instance.OnLook;
+            @Look.canceled -= instance.OnLook;
         }
 
         public void RemoveCallbacks(IGameActions instance)
@@ -462,6 +491,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         void OnShoot(InputAction.CallbackContext context);
         void OnAbility(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnLook(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

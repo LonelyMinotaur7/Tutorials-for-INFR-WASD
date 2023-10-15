@@ -40,6 +40,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Look",
+                    "type": "PassThrough",
+                    "id": "7bda1360-07e1-4b75-a7a2-4ae5c2a95fed",
+                    "expectedControlType": "Vector2",
+                    "processors": "InvertVector2(invertX=false)",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -112,7 +121,7 @@
                 {
                     "name": "",
                     "id": "98c4ba3d-dd74-4c78-a4fd-58b35eba68c5",
-                    "path": "<Mouse>/press",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -139,6 +148,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ab62ca89-a739-46ad-bd19-97a84a1765cb",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Look",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

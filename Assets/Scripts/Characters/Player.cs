@@ -11,10 +11,22 @@ public class Player : MonoBehaviour
 
     private bool isGrounded;
     private Vector3 _moveDir;
+
+
+
+    [SerializeField, Range(1, 20)] private float mouseSensX;
+    [SerializeField, Range(1, 20)] private float mouseSensY;
     
-    
-    
-    
+    [SerializeField, Range(-90, 0)] private float minViewAngle;
+    [SerializeField, Range(0, 90)] private float maxViewAngle;
+
+    [SerializeField] private Transform lookAtPoint;
+
+
+    [SerializeField] private Rigidbody bulletPrefab;
+    [SerializeField] private float bulletForce;
+
+    private Vector2 currentRotation;
 
     private Rigidbody rb;
 
@@ -33,7 +45,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position += (Vector3) _moveDir * speed * Time.deltaTime;
+        transform.position += transform.rotation * (_moveDir * speed * Time.deltaTime);
         CheckGround();
 
         if (Input.GetMouseButtonDown(0))
@@ -67,4 +79,30 @@ public class Player : MonoBehaviour
     }
 
 
+    public void SetLookDirection(Vector2 readValue)
+    {
+        //controls rotation angles
+        currentRotation.x += readValue.x * Time.deltaTime * mouseSensX;
+        currentRotation.y += readValue.y * Time.deltaTime * mouseSensY;
+        
+        //rotates left and right
+        transform.rotation = Quaternion.AngleAxis(currentRotation.x, Vector3.up);
+        
+        //clamp rotation angle so you cant roll your head
+        currentRotation.y = Mathf.Clamp(currentRotation.y, minViewAngle, maxViewAngle);
+        
+        //rotate up and down
+        lookAtPoint.localRotation = Quaternion.AngleAxis(currentRotation.y, Vector3.right);
+
+        
+    }
+
+    public void Shoot()
+    {
+        Rigidbody currentProjectile = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+        
+        currentProjectile.AddForce(lookAtPoint.forward * bulletForce, ForceMode.Impulse);
+        
+        Destroy(currentProjectile.gameObject, 4); //destroy after 4 seconds
+    }
 }
