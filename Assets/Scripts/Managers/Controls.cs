@@ -38,12 +38,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Shoot"",
-                    ""type"": ""Button"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""e896401d-7e33-4a34-83f8-a08e15c11a96"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 },
                 {
                     ""name"": ""Ability"",
@@ -69,6 +69,33 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""id"": ""7bda1360-07e1-4b75-a7a2-4ae5c2a95fed"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": ""InvertVector2(invertX=false)"",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Reload"",
+                    ""type"": ""Button"",
+                    ""id"": ""058800d5-b001-459f-abb3-ec6939cb1017"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Swap"",
+                    ""type"": ""Button"",
+                    ""id"": ""90d2b444-7465-4ba7-a480-ae2406b0e881"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Swap 2"",
+                    ""type"": ""Button"",
+                    ""id"": ""c388605b-b1ee-45b0-a054-41f5ff54196a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
                 }
@@ -183,6 +210,39 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""Look"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""05269163-3612-4f37-818c-de2d441779b8"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reload"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ad9e7242-7f92-48fa-a18d-6514326d0d61"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Swap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""577e1653-9a41-4e5a-8c95-e674376656b8"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Swap 2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -252,6 +312,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_Game_Ability = m_Game.FindAction("Ability", throwIfNotFound: true);
         m_Game_Jump = m_Game.FindAction("Jump", throwIfNotFound: true);
         m_Game_Look = m_Game.FindAction("Look", throwIfNotFound: true);
+        m_Game_Reload = m_Game.FindAction("Reload", throwIfNotFound: true);
+        m_Game_Swap = m_Game.FindAction("Swap", throwIfNotFound: true);
+        m_Game_Swap2 = m_Game.FindAction("Swap 2", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Newaction = m_UI.FindAction("New action", throwIfNotFound: true);
@@ -324,6 +387,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Game_Ability;
     private readonly InputAction m_Game_Jump;
     private readonly InputAction m_Game_Look;
+    private readonly InputAction m_Game_Reload;
+    private readonly InputAction m_Game_Swap;
+    private readonly InputAction m_Game_Swap2;
     public struct GameActions
     {
         private @Controls m_Wrapper;
@@ -333,6 +399,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         public InputAction @Ability => m_Wrapper.m_Game_Ability;
         public InputAction @Jump => m_Wrapper.m_Game_Jump;
         public InputAction @Look => m_Wrapper.m_Game_Look;
+        public InputAction @Reload => m_Wrapper.m_Game_Reload;
+        public InputAction @Swap => m_Wrapper.m_Game_Swap;
+        public InputAction @Swap2 => m_Wrapper.m_Game_Swap2;
         public InputActionMap Get() { return m_Wrapper.m_Game; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -357,6 +426,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Look.started += instance.OnLook;
             @Look.performed += instance.OnLook;
             @Look.canceled += instance.OnLook;
+            @Reload.started += instance.OnReload;
+            @Reload.performed += instance.OnReload;
+            @Reload.canceled += instance.OnReload;
+            @Swap.started += instance.OnSwap;
+            @Swap.performed += instance.OnSwap;
+            @Swap.canceled += instance.OnSwap;
+            @Swap2.started += instance.OnSwap2;
+            @Swap2.performed += instance.OnSwap2;
+            @Swap2.canceled += instance.OnSwap2;
         }
 
         private void UnregisterCallbacks(IGameActions instance)
@@ -376,6 +454,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Look.started -= instance.OnLook;
             @Look.performed -= instance.OnLook;
             @Look.canceled -= instance.OnLook;
+            @Reload.started -= instance.OnReload;
+            @Reload.performed -= instance.OnReload;
+            @Reload.canceled -= instance.OnReload;
+            @Swap.started -= instance.OnSwap;
+            @Swap.performed -= instance.OnSwap;
+            @Swap.canceled -= instance.OnSwap;
+            @Swap2.started -= instance.OnSwap2;
+            @Swap2.performed -= instance.OnSwap2;
+            @Swap2.canceled -= instance.OnSwap2;
         }
 
         public void RemoveCallbacks(IGameActions instance)
@@ -492,6 +579,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         void OnAbility(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
+        void OnReload(InputAction.CallbackContext context);
+        void OnSwap(InputAction.CallbackContext context);
+        void OnSwap2(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

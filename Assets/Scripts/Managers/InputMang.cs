@@ -7,6 +7,8 @@ public static class InputMang
 
     private static Controls _Controls;
 
+    
+
 
     public static void Init(Player myPlayer)
 
@@ -42,6 +44,19 @@ public static class InputMang
         _Controls.Game.Shoot.performed += ctx =>
         {
             myPlayer.Shoot();
+        };
+
+        _Controls.Game.Reload.performed += ctx =>
+        {
+            myPlayer.Reload();
+        };
+        _Controls.Game.Swap.performed += ctx =>
+        {
+            myPlayer.Swap();
+        };
+        _Controls.Game.Swap2.performed += ctx =>
+        {
+            myPlayer.Swap2();
         };
 
         _Controls.Perm.Enable();

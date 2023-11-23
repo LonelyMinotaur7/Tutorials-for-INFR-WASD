@@ -1,10 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 
 {
+    private bool _weaponShootToggle;
+
+    public GameObject Model;
+
+    public GameObject ShotGunText;
+    public GameObject SniperText;
 
     [SerializeField] private float speed;
     [SerializeField] private float jumpForce;
@@ -26,6 +34,31 @@ public class Player : MonoBehaviour
     [SerializeField] private Rigidbody bulletPrefab;
     [SerializeField] private float bulletForce;
 
+    [Header("Player UI")] 
+    [SerializeField] private Image healthbar;
+
+    [SerializeField] private TextMeshProUGUI shotsfired;
+    [SerializeField] private TextMeshProUGUI shotsleft;
+    private int ShotsLeft = 12;
+
+    [SerializeField] private float maxhealth;
+
+    [SerializeField] private WeaponBase myWeapon;
+    
+    private int shotsfiredcounter;
+    private float _health;
+
+    private float Health
+    {
+        get => _health;
+        set
+        {
+            _health = value;
+            healthbar.fillAmount = _health / maxhealth;
+        }
+        
+    }
+
     private Vector2 currentRotation;
 
     private Rigidbody rb;
@@ -40,6 +73,8 @@ public class Player : MonoBehaviour
         InputMang.GameMode();
 
         rb = GetComponent<Rigidbody>();
+
+        Health = maxhealth;
     }
 
     // Update is called once per frame
@@ -47,11 +82,15 @@ public class Player : MonoBehaviour
     {
         transform.position += transform.rotation * (_moveDir * speed * Time.deltaTime);
         CheckGround();
+        
+        shotsleft.text = ShotsLeft.ToString();
 
         if (Input.GetMouseButtonDown(0))
         {
             Debug.Log("Shoot");
         }
+
+        Health -= Time.deltaTime * 5;
     }
 
 
@@ -97,12 +136,56 @@ public class Player : MonoBehaviour
         
     }
 
+    private bool firestate;
+
     public void Shoot()
     {
-        Rigidbody currentProjectile = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+        if (ShotsLeft > 0)
+        {
+            _weaponShootToggle = !_weaponShootToggle;
+            if (_weaponShootToggle)
+            {
+                myWeapon.StartShooting();
+                
+            }
+            else
+            {
+                myWeapon.StopShooting();
+                ShotsLeft = ShotsLeft - 1;
+            }
+            
+            
+
+             shotsfiredcounter++;
+
+             shotsfired.text = shotsfiredcounter.ToString();
+
+
+             
+
+             
+        }
         
-        currentProjectile.AddForce(lookAtPoint.forward * bulletForce, ForceMode.Impulse);
-        
-        Destroy(currentProjectile.gameObject, 4); //destroy after 4 seconds
+    }
+
+    public void Reload()
+    {
+        ShotsLeft = 12;
+    }
+
+    public void Swap()
+    {
+        ProjectileWeapon.Shotgun = true;
+        Model.SetActive(false);
+        ShotGunText.SetActive(true);
+        SniperText.SetActive(false);
+    }
+    
+    public void Swap2()
+    {
+        ProjectileWeapon.Shotgun = false;
+        Model.SetActive(true);
+        ShotGunText.SetActive(false);
+        SniperText.SetActive(true);
     }
 }
